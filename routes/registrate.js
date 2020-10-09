@@ -16,13 +16,14 @@ router.post('/signup', (req, res) => {
 
   axios.patch(process.env.DATABASE_URL + "/content", req.body)
     .then(res => {
-      console.log("JSON.stringify({req, err:null})");
+      console.log("token ");
+      console.log(token );
       res.send({ token, err:null });
     })
     .catch(err => {
       console.log("token, err ");
       console.log(token, err );
-      res.send(token, err);
+      res.send({token, err});
     });
 });
 
