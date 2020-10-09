@@ -8,16 +8,18 @@ const database = [];
 const secret = "secret";
 
 router.post('/signup', (req, res) => {
+  const user = req.body;
   console.log("JSON.stringify(req.body)");
-  console.log(JSON.stringify(req.body));
+  console.log(JSON.stringify(user));
 
-  const token = jwt.sign(req.body, secret);
-  req.body.token = token;
+  const token = jwt.sign(user, secret);
+  user.token = token;
 
-  axios.patch(process.env.DATABASE_URL + "/content", req.body)
+  axios.patch(process.env.DATABASE_URL + "/content", user.id+".json")
     .then(res => {
       console.log("token ");
       console.log(token );
+      res.header({ "Content-Type": "text/plain;charset=utf-8" });
       res.send({ token, err:null });
     })
     .catch(err => {
