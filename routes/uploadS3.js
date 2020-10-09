@@ -36,6 +36,7 @@ router.use('/upload',upload, (req, res) => {
     }
     else {//upload:file
       console.log("sending img url");
+      res.header()
       res.send("https://modular-restrunt-images.s3.us-east-2.amazonaws.com/"+req.file.originalname);
     }
   })
