@@ -15,16 +15,22 @@ router.post('/signup', (req, res) => {
   const token = jwt.sign(user, secret);
   user.token = token;
 
-  axios.patch(process.env.DATABASE_URL + "/content", user.id+".json")
+  console.log("firbase URL: "+process.env.DATABASE_URL + "content/"+user.id+".json");
+  var config = {
+    method: 'PATCH',
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Credentials":true,
+    url: process.env.DATABASE_URL + "content/"+user.id+".json",
+    data: user
+};
+  axios(config)
     .then(res => {
-      console.log("token ");
-      console.log(token );
-      res.header({ "Content-Type": "text/plain;charset=utf-8" });
+      //res.header({ "Content-Type": "application/json" });
       res.send({ token, err:null });
     })
     .catch(err => {
       console.log("token, err ");
-      console.log(token, err );
+      console.log(token, err.body);
       res.send({token, err});
     });
 });
