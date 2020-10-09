@@ -25,7 +25,8 @@ router.use('/upload',upload, (req, res) => {
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: req.file.originalname,   //path in bucket+ the img name in the bucket
-    Body: req.file.buffer
+    Body: req.file.buffer,
+    ACL: "public-read"
   }
   
   console.log("params: ",params);
