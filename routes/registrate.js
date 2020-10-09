@@ -5,23 +5,26 @@ const router = express.Router();
 const axios = require('axios');
 
 const database = [];
-const secret = "secret"
+const secret = "secret";
 
-router.patch('/signup', (req, res) => {
-  console.log(JSON.stringify(req.body))
+router.post('/signup', (req, res) => {
+  console.log("JSON.stringify(req.body)");
+  console.log(JSON.stringify(req.body));
 
-  const token = jwt.sign(req.body, secret)
+  const token = jwt.sign(req.body, secret);
   req.body.token = token;
 
   axios.patch(process.env.DATABASE_URL + "/content", req.body)
     .then(res => {
-      console.log(JSON.stringify({ worked: true, req }))
-      res.send({ worked: true, req });
+      console.log("JSON.stringify({req, err:null})");
+      console.log(JSON.stringify({req, err:null }));
+      res.send({ req, err:null });
     })
     .catch(err => {
-      console.log(JSON.stringify({ worked: true, req, err }))
-      res.send({ worked: false, user:req.details, err });
-    })
+      console.log("JSON.stringify({req, err })");
+      console.log(JSON.stringify({req, err }));
+      res.send(req, err);
+    });
 });
 
 router.post('/login-name', (req, res) => { // getting user name and password
