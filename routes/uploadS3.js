@@ -20,7 +20,7 @@ const s3 = new aws.S3({
 })
 
 router.use('/upload',upload, (req, res) => {
-  console.log("upload:file: ", req.file);
+  console.log("upload:file: ", req);
 
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
@@ -36,7 +36,6 @@ router.use('/upload',upload, (req, res) => {
     }
     else {//upload:file
       console.log("sending img url");
-      res.header()
       res.send("https://modular-restrunt-images.s3.us-east-2.amazonaws.com/"+req.file.originalname);
     }
   })
