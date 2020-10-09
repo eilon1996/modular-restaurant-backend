@@ -8,25 +8,25 @@ const database = [];
 const secret = "secret";
 
 router.post('/signup', (req, res) => {
-  const user = req.body;
+  const user = Object.Object(req.body)[0];
   console.log("JSON.stringify(req.body)");
   console.log(JSON.stringify(user));
 
   const token = jwt.sign(user, secret);
   user.token = token;
 
-  console.log("firbase URL: "+process.env.DATABASE_URL + "content/"+user.id+".json");
+  console.log("firbase URL: "+process.env.DATABASE_URL + "content/.json");
   var config = {
     method: 'PATCH',
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Credentials":true,
-    url: process.env.DATABASE_URL + "content/"+user.id+".json",
-    data: user
+    url: process.env.DATABASE_URL + "content/.json",
+    data: req.body
 };
   axios(config)
     .then(res => {
       //res.header({ "Content-Type": "application/json" });
-      res.send({ token, err:null });
+      res.send(token);
     })
     .catch(err => {
       console.log("token, err ");
