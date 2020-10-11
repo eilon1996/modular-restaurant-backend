@@ -4,16 +4,17 @@ const router = express.Router();
 
 const axios = require('axios');
 
-const database = [];
-const secret = "secret";
 
-router.post('/signup', (req, res) => {
-  const user = Object.Object(req.body)[0];
+router.use('/signup', (req, res) => {
+  const user = Object.values(req.body)[0];
   console.log("JSON.stringify(req.body)");
-  console.log(JSON.stringify(user));
+  console.log(req.body);
+  console.log(Object.values(req.body)[0]);
 
+  const secret = "secret";
   const token = jwt.sign(user, secret);
-  user.token = token;
+  user["token"] = token;
+  console.log("token is done");
 
   console.log("firbase URL: "+process.env.DATABASE_URL + "content/.json");
   var config = {
@@ -35,7 +36,7 @@ router.post('/signup', (req, res) => {
     });
 });
 
-router.post('/login-name', (req, res) => { // getting user name and password
+router.post('/login-name', (req, res) => { //getting user name and password
   var details = req.body;
   const user = database.filter(({ email }) => email === details.email);
   console.log("connected with username user: ", user, "database", database);
