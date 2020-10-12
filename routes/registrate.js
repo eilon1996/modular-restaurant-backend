@@ -10,33 +10,54 @@ const secret = "secret";
 router.post('/signup', (req, res) => {
   console.log("entered backend");
 
-  const token = jwt.sign(req.body, secret);
-  req.body.token = token;
-
   var details = req.body;
   const id = details.id;
 
   var config = {
-    method: 'PATCH',
+    method: 'GET',
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Credentials":true,
-    crossorigin:true,
-    url: "https://modolar-restrunt.firebaseio.com/content/"+id+".json",
-    //url: process.env.BACKEND_PORT+"/upload",
-    data:  details 
+    "Access-Control-Allow-Credentials": true,
+    crossorigin: true,
+    url: process.env.DATABASE_URL + "content.json",
+    data: details
   };
 
+  // check if user exist
   axios(config)
     .then(response => {
-      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\nres:");
-      //console.log(res.data);
-      res.send({token});
+      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist res:");
+      //const existingUser = res.data.filter(user => user.id === id);
+      if (Object.keys(response.data).filter(k => k === id).length > 0)
+          throw {err: "user already exist"}
+
+      return true;
+    })
+    .then(response => {
+      console.log("response", response);
+      const token = jwt.sign(id, process.env.JWT_SECRET);
+      req.body.token = token;
+
+      config.method = "PATCH";
+      config.url = process.env.DATABASE_URL + "content/" + id + ".json",
+        // upload user to the database
+        axios(config)
+          .then(response => {
+            console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\nres:");
+            //console.log(res.data);
+            res.send({ token });
+          })
+          .catch(err => {
+            console.log("error from inner catch")
+            throw err;
+          });
     })
     .catch(err => {
-      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\naxios catch err:");
-      console.log({err});
-      res.send(null);
-    })
+      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist catch err:");
+      console.log(err);
+      res.send(err);
+    });
+
+
 });
 
 router.post('/login-name', (req, res) => { // getting user name and password
