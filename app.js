@@ -7,7 +7,7 @@ app.set('view engine', 'ejs');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+console.log("check0");
 app.use((req, res, next) => {
   res.append('Access-Control-Allow-Origin', ['*']);
   res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -15,9 +15,11 @@ app.use((req, res, next) => {
   next();
 });
 
+console.log("check1");
 app.use(registrateRouter);
 app.use(uploadS3Router);
 
+console.log("check2");
 // error handler
 app.use('/', (req, res) => {
   console.log("entered 404");
@@ -25,8 +27,9 @@ app.use('/', (req, res) => {
 
 });
 
-//const PORT = process.env.PORT;
-const PORT = 5000;
+console.log("check3");
+const PORT = process.env.PORT;
+//const PORT = 5001;
 app.listen(PORT);
 
 module.exports = app;

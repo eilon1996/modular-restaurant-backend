@@ -32,11 +32,12 @@ router.use('/upload',upload, (req, res) => {
   console.log("params: ",params);
   s3.upload(params, (err) => {
     if(err){
+      console.log("S3 err");
       console.log(err);
       res.status(500).send(err);
     }
     else {//upload:file
-      console.log("sending img url");
+      console.log("S3 res");
       res.send("https://modular-restrunt-images.s3.us-east-2.amazonaws.com/"+req.file.originalname);
     }
   })

@@ -4,44 +4,47 @@ const router = express.Router();
 
 const axios = require('axios');
 
+const database = [];
+const secret = "secret";
 
-router.use('/signup', (req, res) => {
-  const user = Object.values(req.body)[0];
-  console.log("JSON.stringify(req.body)");
-  console.log(req.body);
-  console.log(Object.values(req.body)[0]);
+router.post('/signup', (req, res) => {
+  console.log("entered backend");
 
-  const secret = "secret";
-  const token = jwt.sign(user, secret);
-  user["token"] = token;
-  console.log("token is done");
+  const token = jwt.sign(req.body, secret);
+  req.body.token = token;
 
-  console.log("firbase URL: "+process.env.DATABASE_URL + "content/.json");
+  var details = req.body;
+  const id = details.id;
+
   var config = {
     method: 'PATCH',
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Credentials":true,
-    url: process.env.DATABASE_URL + "content/.json",
-    data: req.body
-};
+    crossorigin:true,
+    url: "https://modolar-restrunt.firebaseio.com/content/"+id+".json",
+    //url: process.env.BACKEND_PORT+"/upload",
+    data:  details 
+  };
+
   axios(config)
-    .then(res => {
-      //res.header({ "Content-Type": "application/json" });
-      res.send(token);
+    .then(response => {
+      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\nres:");
+      //console.log(res.data);
+      res.send({token});
     })
     .catch(err => {
-      console.log("token, err ");
-      console.log(token, err.body);
-      res.send({token, err});
-    });
+      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\naxios catch err:");
+      console.log({err});
+      res.send(null);
+    })
 });
 
-router.post('/login-name', (req, res) => { //getting user name and password
+router.post('/login-name', (req, res) => { // getting user name and password
   var details = req.body;
   const user = database.filter(({ email }) => email === details.email);
   console.log("connected with username user: ", user, "database", database);
   if (user.length > 0 && details.password === user[0].password) {
-    const token = jwt.sign(user[0], secret)
+    const token = jwt.sign(user[0], secret);
     res.send({ "user": user[0], "token": token });
   }
   else res.send(null);
