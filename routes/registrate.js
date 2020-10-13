@@ -15,11 +15,10 @@ router.post('/signup', (req, res) => {
 
   var config = {
     method: 'GET',
+    url: process.env.DATABASE_URL + "content.json",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Credentials": true,
     crossorigin: true,
-    url: process.env.DATABASE_URL + "content.json",
-    data: details
   };
 
   // check if user exist
@@ -28,7 +27,7 @@ router.post('/signup', (req, res) => {
       console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist res:");
       //const existingUser = res.data.filter(user => user.id === id);
       if (Object.keys(response.data).filter(k => k === id).length > 0)
-          throw {err: "user already exist"}
+          throw {err: "user already exist"};
 
       return true;
     })
@@ -37,8 +36,14 @@ router.post('/signup', (req, res) => {
       const token = jwt.sign(id, process.env.JWT_SECRET);
       req.body.token = token;
 
-      config.method = "PATCH";
-      config.url = process.env.DATABASE_URL + "content/" + id + ".json",
+      config = {
+        method: 'PATCH',
+        url: process.env.DATABASE_URL + "content/" + id + ".json",
+        data: details,
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
+        crossorigin: true
+      };
         // upload user to the database
         axios(config)
           .then(response => {
@@ -47,7 +52,7 @@ router.post('/signup', (req, res) => {
             res.send({ token });
           })
           .catch(err => {
-            console.log("error from inner catch")
+            console.log("error from inner catch");
             throw err;
           });
     })
@@ -56,9 +61,48 @@ router.post('/signup', (req, res) => {
       console.log(err);
       res.send(err);
     });
-
-
 });
+
+
+
+
+
+router.post('/login', (req, res) => {
+  console.log("entered backend");
+
+  var details = req.body;
+  const {id, password} = details;
+
+  console.log("details, id", details, id);
+
+  var config = {
+    method: 'GET',
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Credentials": true,
+    crossorigin: true,
+    url: process.env.DATABASE_URL + "content.json"
+  };
+
+  // check if user exist
+  console.log("login");
+  axios(config)
+    .then(response => {
+      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist res:");
+      const users = Object.values(response.data).filter(user =>user.id === id);
+      console.log("users ", users);
+      if (users.length == 0) throw {err: "user not exist"} ;
+      const user = users[0];
+      if (user.password !== password)  throw {err: "user name or passwards are not correct"} ;
+      res.send({user});
+    })
+    .catch(err => {
+      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist catch err:");
+      console.log(err);
+      res.send(err);
+    });
+});
+
+
 
 router.post('/login-name', (req, res) => { // getting user name and password
   var details = req.body;
