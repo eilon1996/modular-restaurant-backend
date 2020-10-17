@@ -20,11 +20,13 @@ const s3 = new aws.S3({
 })
 
 router.use('/upload',upload, (req, res) => {
-  console.log("upload:file: ", req);
+  console.log("upload:body: ", req.body,"file: ", req.file);
+  const pathName = (req.file.originalname.split("-")).join("/");
+  console.log("req.img name", pathName);
 
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: req.file.originalname,   //path in bucket+ the img name in the bucket
+    Key: pathName,   //path in bucket+ the img name in the bucket
     Body: req.file.buffer,
     ACL: "public-read"
   }
@@ -38,7 +40,7 @@ router.use('/upload',upload, (req, res) => {
     }
     else {//upload:file
       console.log("S3 res");
-      res.send("https://modular-restrunt-images.s3.us-east-2.amazonaws.com/"+req.file.originalname);
+      res.send("https://modular-restrunt-images.s3.us-east-2.amazonaws.com/"+pathName);
     }
   })
 });

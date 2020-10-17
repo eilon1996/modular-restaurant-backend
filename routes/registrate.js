@@ -67,6 +67,44 @@ router.post('/signup', (req, res) => {
 
 
 
+router.post('/login-token', (req, res) => {
+  console.log("entered login-token"/* , req.body */);
+
+  var token = req.body.token;
+
+  console.log("token", token);
+
+  var config = {
+    method: 'GET',
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Credentials": true,
+    crossorigin: true,
+    url: process.env.DATABASE_URL + "content.json"
+  };
+
+  // check if user exist
+  axios(config)
+    .then(response => {
+      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist res:");
+      let users = Object.values(response.data).filter(user =>user.token === token);
+      console.log("users length ", users.length);
+      let user;
+      if (users.length == 0) {
+        users = Object.values(response.data).filter(user =>user.id === "0");
+        user = users[0];
+        console.log("\n\nuser 0", user);
+      }
+      else user = users[0];
+      console.log("\n\nuser not 0 ", user)
+      res.send({user});
+    })
+    .catch(err => {
+      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist catch err:");
+      console.log(err.message);
+      res.send(err.message);
+    });
+});
+
 router.post('/login', (req, res) => {
   console.log("entered backend");
 
