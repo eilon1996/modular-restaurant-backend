@@ -130,7 +130,7 @@ router.post('/login', (req, res) => {
       console.log("users ", users);
       if (users.length == 0) throw {err: "user not exist"} ;
       const user = users[0];
-      if (user.password !== password)  throw {err: "user name or passwards are not correct"} ;
+      if (user.password !== password)  throw {err: "user name or passwords are not correct"} ;
       res.send({user});
     })
     .catch(err => {
