@@ -63,10 +63,6 @@ router.post('/signup', (req, res) => {
     });
 });
 
-
-
-
-
 router.post('/login-token', (req, res) => {
   console.log("entered login-token"/* , req.body */);
 

@@ -4,34 +4,32 @@ const router = express.Router();
 const axios = require('axios');
 
 router.post('/update', (req, res) => {
-  console.log("entered backend");
+  // get the user details
+  console.log("entered update req.body: ", req.body);
 
-  var details = req.body;
-  const id = details.id;
-  const type = details.type;
-  const content = details.content;
+  var { id, type, content } = req.body;
 
-  var config = {
+  config = {
     method: 'PATCH',
-    url: process.env.DATABASE_URL + "content/"+id+"/"+type +".json",
+    url: process.env.DATABASE_URL + "content/" + id + "/"+type+".json",
+    data: content,
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Credentials": true,
-    crossorigin: true,        
-    data: content,
+    crossorigin: true
   };
-
-  // check if user exist
-      console.log("\n\\\\\\\\\\\\\\\\\\\\\n url: "+config.url);
+  // upload user to the database
   axios(config)
     .then(response => {
-      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\n update content");
-      console.log("\n\\\\\\\\\\\\\\\\\\\\\n response: ",response);
+      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\nres:");
+      //console.log(res.data);
       res.send(true);
     })
     .catch(err => {
-      console.log("err: ", err);
-      res.send(err);
+      console.log("error from inner catch");
+      throw err;
     });
+
 });
+
 
 module.exports = router;
