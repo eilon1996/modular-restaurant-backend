@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+const updateContent = require('./routes/updateContent');
 const registrateRouter = require('./routes/registrate');
 const uploadS3Router = require('./routes/uploadS3');
 
@@ -14,6 +15,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(updateContent);
 app.use(registrateRouter);
 app.use(uploadS3Router);
 
