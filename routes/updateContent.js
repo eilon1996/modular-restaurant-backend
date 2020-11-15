@@ -6,9 +6,11 @@ const axios = require('axios');
 router.post('/update', (req, res) => {
   // get the user details
   console.log("entered update req.body: ", req.body);
-
+  console.log("url: ",process.env.DATABASE_URL + "content/" + id + "/"+type+".json");
+  
   var { id, type, content } = req.body;
 
+  console.log("url: ", id, type);
   config = {
     method: 'PATCH',
     url: process.env.DATABASE_URL + "content/" + id + "/"+type+".json",
@@ -25,8 +27,8 @@ router.post('/update', (req, res) => {
       res.send(true);
     })
     .catch(err => {
-      console.log("error from inner catch");
-      throw err;
+      console.log("error from inner catch", err);
+      res.send(err);
     });
 
 });
