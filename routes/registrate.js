@@ -25,7 +25,13 @@ router.post('/signup', (req, res) => {
   // check if user exist
   axios(config)
     .then(response => {
-      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist res:");
+      const invalid_string_in_id = [".", "_", "/","\\", "admin"];
+      console.log("id : ", id)
+      for(var s of invalid_string_in_id){
+        console.log("id.indexOf(s) !== -1: ", id.indexOf(s))
+        if (id.indexOf(s) !== -1)
+          throw {err: "user name contain  can't contain '.', '_', '/' '\\' or 'admin'"};
+      }
       if (Object.keys(response.data).filter(k => k === id).length > 0)
           throw {err: "user already exist"};
 
@@ -86,8 +92,7 @@ router.post('/login-token', (req, res) => {
       console.log("users length ", users.length);
       let user;
       if (users.length == 0) {
-        users = Object.values(response.data).filter(user =>user.credentials.id === "0");
-        user = users[0];
+        user = response.data["0"];
         console.log("\n\nuser 0", user);
       }
       else {
@@ -124,7 +129,10 @@ router.post('/login', (req, res) => {
   axios(config)
     .then(response => {
       console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\n check if user exist res:");
-
+      if(id === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD){
+        id = 0;
+        password = 0;
+      }
       console.log("response.data", response.data);
       const user = response.data[id];
       console.log("user", user);
