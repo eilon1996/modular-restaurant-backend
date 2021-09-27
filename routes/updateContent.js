@@ -8,6 +8,7 @@ router.post('/update', (req, res) => {
   //console.log("entered update req.body: ", req.body);
   
   var { path, content } = req.body;
+  path.replace("/admin/", "/0/");
   console.log("content: ", content);
   console.log("path: ", path);
   console.log("url: ",process.env.DATABASE_URL+"content/" + path+".json");
