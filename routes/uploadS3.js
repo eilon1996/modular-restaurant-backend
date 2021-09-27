@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require("multer");
 const aws = require("aws-sdk");
+const { path } = require('../app');
 
 
 const storage = multer.memoryStorage({
@@ -21,7 +22,12 @@ const s3 = new aws.S3({
 
 router.use('/upload',upload, (req, res) => {
   console.log("upload:body: ", req.body,"file: ", req.file);
-  const pathName = (req.file.originalname.split("-")).join("/");
+  // set path
+  pathArry = req.file.originalname.split("_");
+  var d = new Date();
+  var time = d.getTime();
+  pathArry[pathArry.length - 1] = time + "."+pathArry[pathArry.length - 1];
+  var pathName = pathArry.join("/");
   console.log("req.img name", pathName);
 
   const params = {

@@ -81,8 +81,8 @@ router.post('/login-token', (req, res) => {
   // check if user exist
   axios(config)
     .then(response => {
-      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist res:");
-      let users = Object.values(response.data).filter(user =>user.credentials.token === token);
+      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist token res:", response.data);
+      let users = Object.values(response.data).filter(user =>user != null && user.credentials.token === token);
       console.log("users length ", users.length);
       let user;
       if (users.length == 0) {
@@ -92,7 +92,7 @@ router.post('/login-token', (req, res) => {
       }
       else {
         user = users[0];
-        console.log("\n\nuser not 0 ", user);
+        console.log("\n\nnot user 0 ", user);
       }
       res.send({user});
     })
@@ -123,13 +123,16 @@ router.post('/login', (req, res) => {
   console.log("login");
   axios(config)
     .then(response => {
-      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist res:");
-      const users = Object.values(response.data).filter(user =>user.credentials.id === id);
-      console.log("users ", users);
-      if (users.length == 0) throw {err: "user not exist"} ;
-      const user = users[0];
+      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\n check if user exist res:");
+
+      console.log("response.data", response.data);
+      const user = response.data[id];
+      console.log("user", user);
+
+      if (user == null) throw {err: "user not exist"};
       if (user.credentials.password !== password)  throw {err: "username or password are not correct"} ;
       res.send({user});
+
     })
     .catch(err => {
       console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist catch err:");
