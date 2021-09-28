@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 const axios = require('axios');
+//const aws = require("aws-sdk");
 
 const database = [];
 const secret = "secret";
@@ -70,11 +71,32 @@ router.post('/signup', (req, res) => {
 });
 
 router.post('/login-token', (req, res) => {
-  console.log("entered login-token"/* , req.body */);
+
+  /*
+  const s3 = new aws.S3({
+    accessKeyId: process.env.AWS_ID,
+    secretAccessKey: process.env.AWS_SECRET
+  });
+  
+
+  var params = {
+    Bucket: process.env.AWS_BUCKET_NAME, 
+    CopySource: process.env.AWS_BUCKET_NAME+"/users/dishes/0/cake.jpg", 
+    Key: "users/dishes/4/cake.jpg"
+   };
+
+   s3.copyObject(params, function(err, data) {
+     if (err) console.log(err, err.stack); // an error occurred
+     else     console.log(data);           // successful response
+   });
+   */
+
+
+  //console.log("entered login-token"/* , req.body */);
 
   var token = req.body.token;
 
-  console.log("token", token);
+  //console.log("token", token);
 
   var config = {
     method: 'GET',
@@ -87,23 +109,23 @@ router.post('/login-token', (req, res) => {
   // check if user exist
   axios(config)
     .then(response => {
-      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist token res:", response.data);
+      //console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist token res:", response.data);
       let users = Object.values(response.data).filter(user =>user != null && user.credentials.token === token);
-      console.log("users length ", users.length);
+      //console.log("users length ", users.length);
       let user;
       if (users.length == 0) {
         user = response.data["0"];
-        console.log("\n\nuser 0", user);
+        //console.log("\n\nuser 0", user);
       }
       else {
         user = users[0];
-        console.log("\n\nnot user 0 ", user);
+        //console.log("\n\nnot user 0 ", user);
       }
       res.send({user});
     })
     .catch(err => {
-      console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist catch err:");
-      console.log(err.message);
+      //console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist catch err:");
+      //console.log(err.message);
       res.send(err.message);
     });
 });
