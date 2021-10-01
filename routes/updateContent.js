@@ -8,14 +8,21 @@ router.post('/update', (req, res) => {
   //console.log("entered update req.body: ", req.body);
   
   var { path, content } = req.body;
-  path.replace("/admin/", "/0/");
+  var index = path.indexOf(process.env.ADMIN_USERNAME)
+  if(index === -1){
+    var url = process.env.DATABASE_URL+"content/" + path+".json"
+  }else{
+    var url = process.env.DATABASE_URL+"content/" + path.slice(0,index) +"0"+path.slice(index+process.env.ADMIN_USERNAME.length) +".json"
+  }
+  path.replace(process.env.ADMIN_USERNAME, "0");
+  path.replace("admin", "0");
   console.log("content: ", content);
   console.log("path: ", path);
-  console.log("url: ",process.env.DATABASE_URL+"content/" + path+".json");
+  console.log("url: ",url);
 
   config = {
     method: 'PATCH',
-    url: process.env.DATABASE_URL+"content/" + path + ".json",
+    url: url,
     data: content,
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Credentials": true,

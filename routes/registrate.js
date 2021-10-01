@@ -13,7 +13,7 @@ router.post('/signup', (req, res) => {
   console.log("entered signup req.body: ", req.body);
 
   var details = req.body;
-  const id = details.credentials.id;
+  var id = details.credentials.id;
 
   var config = {
     method: 'GET',
@@ -72,26 +72,6 @@ router.post('/signup', (req, res) => {
 
 router.post('/login-token', (req, res) => {
 
-  /*
-  const s3 = new aws.S3({
-    accessKeyId: process.env.AWS_ID,
-    secretAccessKey: process.env.AWS_SECRET
-  });
-  
-
-  var params = {
-    Bucket: process.env.AWS_BUCKET_NAME, 
-    CopySource: process.env.AWS_BUCKET_NAME+"/users/dishes/0/cake.jpg", 
-    Key: "users/dishes/4/cake.jpg"
-   };
-
-   s3.copyObject(params, function(err, data) {
-     if (err) console.log(err, err.stack); // an error occurred
-     else     console.log(data);           // successful response
-   });
-   */
-
-
   //console.log("entered login-token"/* , req.body */);
 
   var token = req.body.token;
@@ -125,7 +105,7 @@ router.post('/login-token', (req, res) => {
     })
     .catch(err => {
       //console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\ncheck if user exist catch err:");
-      //console.log(err.message);
+      console.log(err.message);
       res.send(err.message);
     });
 });
@@ -134,7 +114,7 @@ router.post('/login', (req, res) => {
   console.log("entered backend");
 
   var details = req.body;
-  const {id, password} = details;
+  var {id, password} = details;
 
   console.log("details, id", details, id);
 
@@ -152,8 +132,9 @@ router.post('/login', (req, res) => {
     .then(response => {
       console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\n check if user exist res:");
       if(id === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD){
-        id = 0;
-        password = 0;
+        console.log("login to admin");
+        id = "0";
+        password = "0";
       }
       console.log("response.data", response.data);
       const user = response.data[id];
