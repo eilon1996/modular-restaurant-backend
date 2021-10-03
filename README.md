@@ -10,6 +10,5 @@ and link to the online webise here https://modular-restaurant-yjos2woe7-eilon199
 
 
 
-<
 
 <img src="https://github.com/eilon1996/modular-restaurant-backend/blob/main/front%20page.png" width="532" height="466"/>
