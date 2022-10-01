@@ -32,7 +32,7 @@ router.post('/update', (req, res) => {
   axios(config)
     .then(response => {
       console.log("\n\n\n\\\\\\\\\\\\\\\\\\\\\nres:");
-      //console.log(res.data);
+      console.log(res.data);
       res.send(true);
     })
     .catch(err => {
